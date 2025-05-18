@@ -10,7 +10,7 @@ export default defineEventHandler(async () => {
   const page = await browser.newPage()
 
   // ⚠️ Met ici l'URL accessible du frontend (localhost ou domaine en prod)
-  await page.goto('https://bro-world-space.com/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
+  await page.goto('https://bro-world.vercel.app/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
     waitUntil: 'networkidle0'
   })
 
