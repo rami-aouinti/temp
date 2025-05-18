@@ -1,31 +1,41 @@
-// server/api/export-pdf.ts
-import puppeteer from 'puppeteer'
+import chromium from 'chrome-aws-lambda'
+import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(async () => {
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  })
+  let browser = null
 
-  const page = await browser.newPage()
+  try {
+    browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless
+    })
 
-  // ⚠️ Met ici l'URL accessible du frontend (localhost ou domaine en prod)
-  await page.goto('https://bro-world.vercel.app/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
-    waitUntil: 'networkidle0'
-  })
+    const page = await browser.newPage()
 
-  const pdf = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-    preferCSSPageSize: true
-  })
+    // Remplace bien l’URL par l’URL publique (même si c’est celle de Vercel)
+    await page.goto('https://bro-world-space.com/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
+      waitUntil: 'networkidle0'
+    })
 
-  await browser.close()
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      preferCSSPageSize: true
+    })
 
-  return new Response(pdf, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="resume.pdf"'
-    }
-  })
+    await browser.close()
+
+    return new Response(pdf, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="resume.pdf"'
+      }
+    })
+  } catch (error) {
+    console.error('PDF export failed:', error)
+    if (browser) await browser.close()
+    return new Response('Failed to generate PDF', { status: 500 })
+  }
 })
