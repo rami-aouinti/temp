@@ -1,55 +1,31 @@
 <template>
-  <div>
-    <slot />
-  </div>
+  <v-app>
+    <AppDrawer />
+    <AppBar />
+    <v-main>
+      <NuxtPage />
+    </v-main>
+    <AppFooter />
+  </v-app>
 </template>
-
-<style>
-html {
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+<script setup lang="ts">
+import AppFooter from '~/components/App/AppFooter.vue'
+import AppDrawer from '~/components/App/AppDrawer.vue'
+import AppBar from '~/components/App/AppBar.vue'
+</script>
+<style scoped>
+/* replace padding with margin to limit scrollbar in v-main */
+.v-main {
+  padding-top: 0;
+  padding-bottom: 0;
+  /* https://github.com/vuetifyjs/vuetify/issues/15202 */
+  margin-top: 64px;
+  margin-bottom: 32px;
+  height: calc(100vh - 64px - 32px);
+  /* margin-top: var(--v-layout-top);
+  margin-bottom: var(--v-layout-bottom);
+  height: calc(100vh - var(--v-layout-top) - var(--v-layout-bottom)); */
+  overflow-y: auto;
+  transition-property: padding;
 }
 </style>

@@ -1,3 +1,6 @@
+import { aliases } from 'vuetify/iconsets/mdi'
+
+
 export default defineNuxtConfig({
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -13,11 +16,9 @@ export default defineNuxtConfig({
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -29,10 +30,79 @@ export default defineNuxtConfig({
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: [
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    'vuetify-nuxt-module',
+    'nuxt-auth-utils',
+    'nuxt-echarts',
+    '@nuxt/icon',
+    '@nuxt/eslint',
+    '@nuxtjs/tailwindcss'
+  ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    transpile: ["@headlessui/vue"],
+  },
+  css: ['~/assets/styles/index.css'],
+  experimental: { typedPages: true },
+  typescript: { shim: false, strict: true },
+  vue: { propsDestructure: true },
+  vueuse: { ssrHandlers: true },
+  vuetify: {
+    moduleOptions: {
+      ssrClientHints: {
+        viewportSize: true,
+        prefersColorScheme: true,
+        prefersColorSchemeOptions: {},
+        reloadOnFirstRequest: true,
+      },
+    },
+  },
+  icon: {
+    clientBundle: {
+      icons: Object.values(aliases).map((v) =>
+        (v as string).replace(/^mdi-/, 'mdi:'),
+      ),
+      scan: true,
+      // scan all components in the project and include icons
+      // scan: true,
+    },
+    customCollections: [
+      {
+        prefix: 'custom',
+        dir: './assets/icons',
+      },
+    ],
+  },
+  echarts: {
+    charts: ['LineChart', 'BarChart', 'PieChart', 'RadarChart'],
+    renderer: 'svg',
+    components: [
+      'DataZoomComponent',
+      'LegendComponent',
+      'TooltipComponent',
+      'ToolboxComponent',
+      'GridComponent',
+      'TitleComponent',
+      'DatasetComponent',
+      'VisualMapComponent',
+    ],
+  },
+  vite: {
+    build: { sourcemap: false },
+  },
+  runtimeConfig: {
+    github: {
+      clientId: '',
+      clientSecret: '',
+    },
+    session: {
+      name: 'nuxt-session',
+      password: '',
+    },
+  },
 
   server: {
     host: "0.0.0.0",
