@@ -2,10 +2,14 @@
   <v-col cols="12" md="12">
     <v-card rounded="0" elevation="20">
       <template #title>
-        <div class="d-flex align-center">
-          <span class="icon" v-html="icons.experience"></span>
-          <h6 class="ms-2 text-h7 text-body-1 font-weight-bold">Experience</h6>
-        </div>
+        <HeaderSection
+          :printStyle="printStyle"
+          label="Experience"
+          pathIcon="M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z"
+          size="20"
+          color="black"
+          title="briefcase"
+        />
       </template>
       <div class="d-flex justify-center">
         <v-progress-linear
@@ -125,8 +129,10 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
+import HeaderSection from "~/components/Resume/HeaderSection.vue";
 
+const props = defineProps({
+  printStyle: String
 });
 const iconSize = 20;
 

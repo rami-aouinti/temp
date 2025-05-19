@@ -28,7 +28,7 @@ const icons = {
 
 <style scoped>
 .gap-x-2 > * + * {
-  margin-left: 8px;
+  margin-left: 4px;
 }
 
 </style>

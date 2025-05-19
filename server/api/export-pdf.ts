@@ -1,41 +1,31 @@
-import chromium from 'chrome-aws-lambda'
-import { defineEventHandler } from 'h3'
+// server/api/export-pdf.ts
+import puppeteer from 'puppeteer'
 
 export default defineEventHandler(async () => {
-  let browser = null
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  })
 
-  try {
-    browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless
-    })
+  const page = await browser.newPage()
 
-    const page = await browser.newPage()
+  // ⚠️ Met ici l'URL accessible du frontend (localhost ou domaine en prod)
+  await page.goto('http://localhost:3000/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
+    waitUntil: 'networkidle0'
+  })
 
-    // Remplace bien l’URL par l’URL publique (même si c’est celle de Vercel)
-    await page.goto('http://localhost:3000/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
-      waitUntil: 'networkidle0'
-    })
+  const pdf = await page.pdf({
+    format: 'A4',
+    printBackground: true,
+    preferCSSPageSize: true
+  })
 
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      preferCSSPageSize: true
-    })
+  await browser.close()
 
-    await browser.close()
-
-    return new Response(pdf, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="resume.pdf"'
-      }
-    })
-  } catch (error) {
-    console.error('PDF export failed:', error)
-    if (browser) await browser.close()
-    return new Response('Failed to generate PDF', { status: 500 })
-  }
+  return new Response(pdf, {
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="resume.pdf"'
+    }
+  })
 })
