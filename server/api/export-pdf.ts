@@ -1,6 +1,6 @@
 // server/api/generate-pdf.ts
 import type { H3Event } from 'h3'
-import { writeBody } from 'h3'
+import { defineEventHandler, getQuery, setHeader } from 'h3'
 import { Buffer } from 'node:buffer'
 
 export default defineEventHandler(async (event: H3Event) => {

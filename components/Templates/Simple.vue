@@ -98,11 +98,9 @@
       </v-col>
     </v-row>
   </div>
-  <v-btn color="primary" @click="handleExport">Télécharger le PDF</v-btn>
 </template>
 
 <script lang="ts" setup>
-
 import { defineProps, ref } from 'vue'
 import Stars from "~/components/Resume/Stars.vue";
 import Language from "~/components/Resume/Language.vue";
@@ -116,64 +114,6 @@ import Experience from "~/components/Resume/Experience.vue";
 import HeaderSection from "~/components/Resume/HeaderSection.vue";
 
 const printStyle = ref('');
-
-const handleExport = async () => {
-  printStyle.value = 'padding: 8px 0;';
-  if (typeof window === 'undefined') return;
-
-  const html2pdf = (await import('html2pdf.js')).default;
-  const element = document.getElementById('pdf-content');
-
-  // ⏳ Attendre le chargement des images
-  await Promise.all(
-    Array.from(element.querySelectorAll('img')).map((img) => {
-      return new Promise((resolve) => {
-        if (img.complete && img.naturalHeight !== 0) {
-          resolve(null);
-        } else {
-          img.onload = img.onerror = () => resolve(null);
-        }
-      });
-    })
-  );
-
-  const opt = {
-    margin: [0 ,0, 5 ,0],
-    filename: 'resume.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-
-  // Crée une instance jsPDF
-  const worker = html2pdf().set(opt).from(element);
-  const pdf = await worker.toPdf().get('pdf');
-  const totalPages = pdf.internal.getNumberOfPages();
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-
-  const marginTop = 5; // mm
-  const marginBottom = 5;
-
-  for (let i = 1; i <= totalPages; i++) {
-    pdf.setPage(i);
-
-    const footerText = `Page ${i} / ${totalPages}`;
-
-    // Style du texte
-    pdf.setFontSize(10);
-    pdf.setTextColor(100); // gris foncé
-
-    // Centré en bas
-    const textWidth = pdf.getStringUnitWidth(footerText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
-    const x = (pageWidth - textWidth) / 2;
-    const y = pageHeight - 2; // 10 mm depuis le bas
-
-    pdf.text(footerText, x, y);
-  }
-  await worker.save();
-  printStyle.value = '';
-}
 const props = defineProps({
   acc: {
     type: Object,
