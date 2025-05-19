@@ -50,7 +50,7 @@ const toggleSettingsDrawerHobby = (value) => {
 const urlToExport = 'https://www.bro-world-space.com/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119' // ou route locale déployée
 
 const downloadPdf = async () => {
-  const response = await fetch(`/api/generate-pdf?url=${encodeURIComponent(urlToExport)}`)
+  const response = await fetch(`/api/export-pdf?url=${encodeURIComponent(urlToExport)}`)
 
   if (!response.ok) {
     console.error('Erreur de génération PDF')
