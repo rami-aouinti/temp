@@ -1,31 +1,35 @@
-// server/api/export-pdf.ts
-import puppeteer from 'puppeteer'
+// server/api/generate-pdf.ts
+import type { H3Event } from 'h3'
+import { writeBody } from 'h3'
+import { Buffer } from 'node:buffer'
 
-export default defineEventHandler(async () => {
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+export default defineEventHandler(async (event: H3Event) => {
+  const browserlessUrl = 'https://chrome.browserless.io/pdf?token=2SLDbQ0ri722TE57ca2a36018a1f945008f636187b2f97cb4'
+
+  const targetUrl = getQuery(event).url as string
+  if (!targetUrl) {
+    return { error: 'Missing ?url= parameter' }
+  }
+
+  const response = await fetch(browserlessUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      url: targetUrl,
+      options: {
+        format: 'A4',
+        printBackground: true,
+      },
+    }),
   })
 
-  const page = await browser.newPage()
+  if (!response.ok) {
+    return { error: `Browserless failed: ${response.statusText}` }
+  }
 
-  // ⚠️ Met ici l'URL accessible du frontend ocalhost:3000(localhost ou domaine en prod)
-  await page.goto('https://www.bro-world-space.com/l/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119', {
-    waitUntil: 'networkidle0'
-  })
+  const buffer = Buffer.from(await response.arrayBuffer())
 
-  const pdf = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-    preferCSSPageSize: true
-  })
-
-  await browser.close()
-
-  return new Response(pdf, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="resume.pdf"'
-    }
-  })
+  setHeader(event, 'Content-Type', 'application/pdf')
+  setHeader(event, 'Content-Disposition', 'inline; filename="export.pdf"')
+  return buffer
 })

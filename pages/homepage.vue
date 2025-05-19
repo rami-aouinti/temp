@@ -46,17 +46,11 @@ const toggleSettingsDrawerHobby = (value) => {
   showSettingsDrawerHobby.value = value;
 };
 
-const downloadPdf = async () => {
-  const res = await fetch('/api/export-pdf')
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
 
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'resume.pdf'
-  link.click()
+const urlToExport = 'https://www.bro-world-space.com/resume?data=eyJuIjoiIiwiZCI6IiIsImkiOiIiLCJmIjoiIiwidCI6IiIsImlnIjoiIiwiZ2giOiIiLCJ0ZyI6IiIsImwiOiIiLCJlIjoiIiwidyI6IiIsInkiOiIiLCJscyI6W119' // ou route locale déployée
 
-  URL.revokeObjectURL(url)
+const downloadPdf = () => {
+  window.open(`/api/export-pdf?url=${encodeURIComponent(urlToExport)}`, '_blank')
 }
 definePageMeta({
   icon: 'mdi-home',
