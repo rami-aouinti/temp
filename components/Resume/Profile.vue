@@ -1,19 +1,34 @@
 <template>
   <div class="d-flex justify-center py-1">
-    <img
-      :src="image"
-      :alt="name"
-      class="profile-image"
-      width="80"
-      height="80"
-    />
+    <v-badge
+      bottom
+      color="primary"
+      offset-x="0"
+      offset-y="95"
+      icon="edit"
+    >
+      <img
+        :src="image"
+        :alt="name"
+        class="profile-image border-radius-lg"
+        width="100"
+        height="100"
+      />
+    </v-badge>
   </div>
-  <div class="d-flex justify-center py-1">
-    <h5 class="text-body-1 font-weight-bold">{{ name }}</h5>
-  </div>
-  <div class="d-flex justify-center py-1">
-    <p>{{ title }}</p>
-  </div>
+  <v-hover v-slot="{ isHovering, props: hoverProps }">
+    <div class="d-flex align-center justify-center fixed-skill-line py-1" v-bind="hoverProps">
+      <h5 class="text-body-1 font-weight-bold" contenteditable="true">John doe</h5>
+      <v-icon v-if="isHovering" size="16" class="mx-3">mdi-edit</v-icon>
+    </div>
+  </v-hover>
+  <v-hover v-slot="{ isHovering, props: hoverProps }">
+    <div class="d-flex align-center justify-center" v-bind="hoverProps">
+      <p contenteditable="true">{{ title }}</p>
+      <v-icon v-if="isHovering" size="16" class="mx-3">mdi-edit</v-icon>
+    </div>
+  </v-hover>
+
 </template>
 
 <script lang="ts" setup>

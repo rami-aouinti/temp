@@ -27,6 +27,7 @@
     "pinia": "^3.0.2",
     "puppeteer": "^24.8.2",
     "puppeteer-core": "^24.8.2",
+    "vue3-picture-swipe": "^3.0.6",
     "vuedraggable": "^4.1.0",
     "vuetify": "^3.8.5",
     "vuetify-nuxt-module": "^0.18.6"

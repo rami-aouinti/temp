@@ -1,15 +1,16 @@
 <template>
-  <div class="d-flex align-center">
-    <v-icon class="text-white" size="20">mdi-heart</v-icon>
-    <h6 class="text-h7 ms-2 text-body-1 font-weight-bold">Interests</h6>
-  </div>
+  <HeaderSection
+    icon="mdi-heart"
+    label="Interests"
+    size="20"
+  />
   <v-divider :thickness="5"></v-divider>
-  <div class="px-0 py-2 text-sm">
+  <div class="pa-3 text-sm">
     <v-list class="no-background px-0" :lines="false" density="compact">
       <v-list-item v-for="(item, i) in props.items" :key="i" :value="item" class="no-background text-sm text-white px-0">
         <div class="d-flex align-center">
           <v-icon class="text-white" size="12" icon="mdi-radiobox-blank" />
-          <span class="ms-2">{{ item.text }}</span>
+          <span contenteditable="true" class="ms-2">{{ item.text }}</span>
         </div>
       </v-list-item>
     </v-list>
@@ -17,6 +18,8 @@
 </template>
 
 <script lang="ts" setup>
+import HeaderSection from "~/components/Resume/HeaderSection.vue";
+
 const props = defineProps({
   items: Array
 });
